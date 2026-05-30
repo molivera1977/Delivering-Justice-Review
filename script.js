@@ -16,6 +16,12 @@ const SESSION_ID    = 'DJ-' + Math.random().toString(36).slice(2, 9).toUpperCase
 /* ── SHEET SUBMISSION (update URL as needed) ───────── */
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzv8CWv1yyi8NeH04now9UxVL4IZm5yMqqsEGMcgGdrcAOWVB-aSp5siTvSSJXIUpzFMA/exec';
 
+function attemptSessionId() {
+  // Unique per section + attempt so attempt 2 never overwrites attempt 1 in the sheet
+  const attempt = app.currentAttemptNum || 1;
+  return SESSION_ID + '-' + (app.currentSection || 'x') + '-A' + attempt;
+}
+
 function submitScorePartial() {
   const pct = app.currentBank.length
     ? Math.round((app.score / app.currentBank.length) * 100) : 0;
@@ -25,7 +31,7 @@ function submitScorePartial() {
     body: JSON.stringify({
       action:      'submit',
       game:        'dj_' + (app.currentSection || 'djreview'),
-      sessionId:   SESSION_ID,
+      sessionId:   attemptSessionId(),
       name:        app.studentName || 'Unknown',
       section:     app.currentSection || '?',
       score:       app.score,
@@ -48,7 +54,7 @@ function submitScoreFinal() {
     body: JSON.stringify({
       action:      'submit',
       game:        'dj_' + (app.currentSection || 'djreview'),
-      sessionId:   SESSION_ID,
+      sessionId:   attemptSessionId(),
       name:        app.studentName || 'Unknown',
       section:     app.currentSection || '?',
       attempt:     app.currentAttemptNum || 1,
