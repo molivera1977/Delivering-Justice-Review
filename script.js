@@ -928,7 +928,7 @@ const app = {
     };
 
     speakNext();
-  },,,
+  },
 
   /* ── SCORES ── */
   showScores() {
