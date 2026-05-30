@@ -591,6 +591,13 @@ button.answer-btn.incorrect { background: #f8d7da; border-color: #dc3545; color:
 }
 
 /* ── SCOREBOARD ────────────────────────────────────── */
+.sb-summary-row { display: flex; gap: 12px; margin-bottom: 6px; flex-wrap: wrap; }
+.sb-summary-card { flex: 1 1 120px; background: #f9f9f9; border: 2px solid #e0e0e0; border-radius: 14px; padding: 14px 12px; text-align: center; }
+.sb-summary-label { font-size: 0.72rem; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+.sb-summary-grade { font-family: 'Fredoka One', cursive; font-size: 2.2rem; line-height: 1; margin-bottom: 4px; }
+.sb-summary-score { font-size: 0.82rem; font-weight: 700; color: #555; }
+.sb-summary-attempt { font-size: 0.68rem; color: #aaa; margin-top: 4px; }
+
 .scoreboard-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.93rem; }
 .scoreboard-table th, .scoreboard-table td { border-bottom: 2px solid #eee; padding: 9px 10px; text-align: center; }
 .scoreboard-table th { color: var(--primary); }

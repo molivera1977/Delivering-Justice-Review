@@ -130,6 +130,22 @@ let activeSpeakBtn  = null;
 let reviewMode      = false;
 let reviewAutoRun   = false;
 
+function letterGradeStudent(pct) {
+  if (pct >= 97) return 'A+';
+  if (pct >= 93) return 'A';
+  if (pct >= 90) return 'A-';
+  if (pct >= 87) return 'B+';
+  if (pct >= 83) return 'B';
+  if (pct >= 80) return 'B-';
+  if (pct >= 77) return 'C+';
+  if (pct >= 73) return 'C';
+  if (pct >= 70) return 'C-';
+  if (pct >= 67) return 'D+';
+  if (pct >= 63) return 'D';
+  if (pct >= 60) return 'D-';
+  return 'F';
+}
+
 function stopActiveSpeech() {
   window.speechSynthesis.cancel();
   document.querySelectorAll('.wrd.hl').forEach(e => e.classList.remove('hl'));
@@ -1073,13 +1089,35 @@ const app = {
     noEl.style.display = 'none';
 
     const sections = ['vocab','comp','cloze'];
-    listEl.innerHTML = sections.map(sec => {
-      const rows = all.filter(s => s.section === sec);
-      if (!rows.length) return '';
 
-      // Separate attempt 1 vs attempt 2+
-      const att1 = rows.filter(r => (r.attempt || 1) === 1);
-      const att2 = rows.filter(r => (r.attempt || 1) >= 2);
+    // ── Summary card (best score per section) ──
+    const summaryCards = sections.map(sec => {
+      const best = all.filter(s => s.section === sec && s.done)
+        .reduce((b, r) => (!b || r.pct > b.pct) ? r : b, null);
+      const label = SECTION_LABELS[sec];
+      if (!best) {
+        return `<div class="sb-summary-card sb-incomplete">
+          <div class="sb-summary-label">${label}</div>
+          <div class="sb-summary-grade" style="color:#ccc;">—</div>
+          <div class="sb-summary-score" style="color:#aaa;">Not yet completed</div>
+        </div>`;
+      }
+      const grade = letterGradeStudent(best.pct);
+      const gc    = best.pct>=90?'#27ae60':best.pct>=80?'#2980b9':best.pct>=70?'#f39c12':best.pct>=60?'#e67e22':'#e74c3c';
+      return `<div class="sb-summary-card">
+        <div class="sb-summary-label">${label}</div>
+        <div class="sb-summary-grade" style="color:${gc};">${grade}</div>
+        <div class="sb-summary-score">${best.score}/${best.total} · ${best.pct}%</div>
+        <div class="sb-summary-attempt">Best of ${all.filter(s=>s.section===sec&&s.done).length} attempt(s)</div>
+      </div>`;
+    }).join('');
+
+    // ── Section detail tables ──
+    const details = sections.map(sec => {
+      const rows = all.filter(s => s.section === sec && s.done);
+      if (!rows.length) return '';
+      const att1 = rows.filter(r => (r.attempt||1) === 1);
+      const att2 = rows.filter(r => (r.attempt||1) >= 2);
 
       const buildTable = (attempts, label, headerColor) => {
         if (!attempts.length) return '';
@@ -1090,14 +1128,15 @@ const app = {
                         text-transform:uppercase;border-radius:6px;padding:3px 10px;
                         margin-bottom:6px;">${label}</div>
             <table class="scoreboard-table">
-              <thead><tr><th>Name</th><th>Score</th><th>%</th><th>Time</th><th>Date</th></tr></thead>
+              <thead><tr><th>Score</th><th>%</th><th>Grade</th><th>Time</th><th>Date</th></tr></thead>
               <tbody>
                 ${attempts.map(r => {
-                  const cls = r.pct >= 80 ? 'score-good' : r.pct >= 60 ? 'score-ok' : 'score-bad';
+                  const grade = letterGradeStudent(r.pct);
+                  const cls   = r.pct>=90?'score-good':r.pct>=70?'score-ok':'score-bad';
                   return `<tr>
-                    <td>${r.name||'—'}</td>
                     <td>${r.score}/${r.total}</td>
                     <td class="${cls}">${r.pct}%</td>
+                    <td class="${cls}" style="font-weight:800;">${grade}</td>
                     <td>${r.time||'—'}</td>
                     <td>${r.date}</td>
                   </tr>`;
@@ -1111,9 +1150,14 @@ const app = {
         <h3 style="color:var(--primary);margin:22px 0 8px;border-bottom:2px solid #e0e0e0;padding-bottom:6px;">
           ${SECTION_LABELS[sec]}
         </h3>
-        ${buildTable(att1, 'Attempt 1', '#1a3a6b')}
-        ${buildTable(att2, 'Attempt 2', '#c9a227')}`;
+        ${buildTable(att1,'Attempt 1','#1a3a6b')}
+        ${buildTable(att2,'Attempt 2','#c9a227')}`;
     }).join('');
+
+    listEl.innerHTML = `
+      <div style="margin-bottom:6px;font-size:0.8rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;">Your Best Scores</div>
+      <div class="sb-summary-row">${summaryCards}</div>
+      <div style="margin-top:24px;">${details}</div>`;
   },
 
   clearScores() {
