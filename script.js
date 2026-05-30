@@ -702,7 +702,7 @@ const app = {
 
     if (reviewMode) {
       bar.classList.add('hidden');
-      setTimeout(() => this.nextQuestion(), 800);
+      document.getElementById('next-btn').classList.remove('hidden');
       return;
     }
 
