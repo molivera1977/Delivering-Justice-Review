@@ -702,11 +702,30 @@ const app = {
     wrap.innerHTML = '';
 
     q.choices.forEach((text, i) => {
+      const row = document.createElement('div');
+      row.className = 'answer-row';
+
+      const speakBtn = document.createElement('button');
+      speakBtn.className = 'choice-speak-btn';
+      speakBtn.textContent = '🔊';
+      speakBtn.title = 'Read this choice aloud';
+      speakBtn.onclick = (e) => {
+        e.stopPropagation();
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(['A','B','C','D','E'][i] + '. ' + text);
+        u.lang = 'en-US';
+        u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+      };
+
       const btn = document.createElement('button');
       btn.className = 'answer-btn';
       btn.innerHTML = `<strong>${['A','B','C','D','E'][i]}.</strong>&nbsp;${choiceHtml(text)}`;
       btn.onclick = () => this._selectChoice(i, btn, isMulti);
-      wrap.appendChild(btn);
+
+      row.appendChild(speakBtn);
+      row.appendChild(btn);
+      wrap.appendChild(row);
     });
 
     // Partial score submission every 5 questions
@@ -874,27 +893,17 @@ const app = {
     if (pct >= 80) startConfetti();
   },
 
-  /* ── SPEAK QUESTION ── */
+  /* ── SPEAK QUESTION (question text only — use per-choice buttons for choices) ── */
   speakQuestion() {
     window.speechSynthesis.cancel();
     document.querySelectorAll('.wrd.hl').forEach(e => e.classList.remove('hl'));
 
-    // ── Speak question text with word highlight ──
-    const qtEl   = document.getElementById('question-text');
+    const qtEl    = document.getElementById('question-text');
     const qtSpans = Array.from(qtEl.querySelectorAll('.wrd'));
     const qtText  = qtSpans.map(s => s.textContent).join(' ');
 
-    // ── Collect choice button texts (plain, no spans needed) ──
-    const choiceTexts = [];
-    document.querySelectorAll('.answer-btn').forEach((btn, i) => {
-      const label = ['A','B','C','D','E'][i];
-      choiceTexts.push('Choice ' + label + '. ' + btn.innerText.replace(/^[A-E]\.\ */,''));
-    });
-
-    // Speak question first, then each choice in sequence
     const parts = [
-      { text: qtText,  spans: qtSpans },
-      ...choiceTexts.map(t => ({ text: t, spans: null }))
+      { text: qtText, spans: qtSpans }
     ];
 
     let pi = 0;
