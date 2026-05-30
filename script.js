@@ -946,24 +946,26 @@ const app = {
     const pct   = Math.round((this.score / total) * 100);
     const date  = new Date();
 
-    // Save to local scores — include attempt number BEFORE pushing this result
-    const scores  = JSON.parse(localStorage.getItem(SCORES_KEY) || '[]');
-    const prevDone = scores.filter(s => s.name === this.studentName && s.section === this.currentSection && s.done).length;
-    const attemptNum = prevDone + 1;   // 1 or 2 (or 3+ if teacher-unlocked extra)
+    // Save to local scores (skipped in review mode so teacher never accumulates attempts)
+    const scores   = JSON.parse(localStorage.getItem(SCORES_KEY) || '[]');
+    const prevDone = reviewMode ? 0 : scores.filter(s => s.name === this.studentName && s.section === this.currentSection && s.done).length;
+    const attemptNum = prevDone + 1;
     this.currentAttemptNum = attemptNum;
-    scores.push({
-      name:    this.studentName,
-      section: this.currentSection,
-      attempt: attemptNum,
-      score:   this.score,
-      total,
-      pct,
-      elapsed: this.timerSeconds,
-      date:    date.toLocaleDateString(),
-      time:    date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      done:    true
-    });
-    localStorage.setItem(SCORES_KEY, JSON.stringify(scores));
+    if (!reviewMode) {
+      scores.push({
+        name:    this.studentName,
+        section: this.currentSection,
+        attempt: attemptNum,
+        score:   this.score,
+        total,
+        pct,
+        elapsed: this.timerSeconds,
+        date:    date.toLocaleDateString(),
+        time:    date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        done:    true
+      });
+      localStorage.setItem(SCORES_KEY, JSON.stringify(scores));
+    }
 
     submitScoreFinal();
 
