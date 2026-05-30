@@ -29,6 +29,9 @@
           <button class="lgs-btn" onclick="app.showDirections()">🚀 Let's Get Started!</button>
         </div>
       </div>
+      <div style="text-align:right;margin-top:10px;">
+        <span onclick="app.promptTeacherReview()" style="font-size:0.72rem;color:#bbb;cursor:pointer;user-select:none;">Teacher Access</span>
+      </div>
     </div>
 
     <!-- STUDENT LOGIN (hidden until after directions) -->
@@ -163,6 +166,10 @@
        QUIZ SCREEN
   ══════════════════════════════════════════ -->
   <div id="quiz-screen" class="hidden">
+    <div id="review-mode-banner" class="hidden" style="background:#fff3cd;border:2px solid #ffc107;border-radius:10px;padding:7px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;font-weight:bold;color:#856404;">
+      <span>🔍 Teacher Review Mode — auto-answering correctly</span>
+      <button onclick="app.exitReviewMode()" style="background:none;border:1px solid #ffc107;border-radius:6px;padding:3px 10px;cursor:pointer;font-family:inherit;font-weight:bold;color:#856404;font-size:0.78rem;">✕ Exit</button>
+    </div>
     <div class="q-badge">
       <span class="q-badge-pill" id="progress-text">Question 1 of 30</span>
       <span class="score-badge" id="score-text">Score: 0</span>
@@ -219,6 +226,10 @@
     <div class="end-btns">
       <button class="start-btn" onclick="app.tryAgain()">🔄 Try Again</button>
       <button class="start-btn" style="background:#27ae60;box-shadow:0 5px 0 #1e8449;" onclick="app.restart()">🏠 Home</button>
+    </div>
+    <div id="review-next-btn" class="hidden" style="text-align:center;margin-top:12px;">
+      <button class="start-btn" style="background:#8e44ad;box-shadow:0 5px 0 #6c3483;" onclick="app._showReviewPicker()">🔍 Review Another Section</button>
+      <button onclick="app.exitReviewMode()" style="display:block;margin:10px auto 0;background:none;border:none;color:#999;font-size:0.8rem;cursor:pointer;font-family:inherit;text-decoration:underline;">Exit Review Mode</button>
     </div>
   </div>
 

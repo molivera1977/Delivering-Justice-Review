@@ -124,7 +124,8 @@ let loggedInName    = '';
 let unlockedSections = new Set();
 let pinModalCallback = null;
 let tabSwitchCount  = 0;
-let activeSpeakBtn  = null;  // currently speaking button element
+let activeSpeakBtn  = null;
+let reviewMode      = false;
 
 function stopActiveSpeech() {
   window.speechSynthesis.cancel();
@@ -391,6 +392,9 @@ const app = {
       document.getElementById('login-error').textContent = '';
       applyLocks(displayName);
       this.checkResume();
+      // Show review mode button only for teacher
+      const rmBtn = document.getElementById('review-mode-btn');
+      if (rmBtn) rmBtn.classList.toggle('hidden', displayName !== 'Mr. O (Teacher)');
     }
   },
 
@@ -426,8 +430,49 @@ const app = {
     }
   },
 
+  /* ── TEACHER REVIEW MODE ── */
+  promptTeacherReview() {
+    const pin = prompt('Enter Teacher PIN to access Review Mode:');
+    if (pin !== '9377') { if (pin !== null) alert('Incorrect PIN.'); return; }
+    this.studentName = 'Mr. O (Teacher)';
+    reviewMode = true;
+    this._showReviewPicker();
+  },
+
+  _showReviewPicker() {
+    const section = prompt('Choose a section to review:\n1 — Vocabulary\n2 — Comprehension\n3 — Cloze\n\nEnter 1, 2, or 3:');
+    const map = { '1': 'vocab', '2': 'comp', '3': 'cloze' };
+    if (!map[section]) { alert('Invalid choice.'); reviewMode = false; return; }
+    this.startSession(map[section]);
+  },
+
+  exitReviewMode() {
+    reviewMode = false;
+    this.stopTimerEngine();
+    const banner = document.getElementById('review-mode-banner');
+    if (banner) banner.classList.add('hidden');
+    this.show('start-screen');
+    document.getElementById('welcome-panel').classList.remove('hidden');
+    document.getElementById('student-login-panel').classList.add('hidden');
+  },
+
+  _autoAnswer() {
+    const q = this.currentBank[this.currentIndex];
+    const isMulti = Array.isArray(q.answer);
+    const answers = isMulti ? q.answer : [q.answer];
+    document.querySelectorAll('.answer-btn').forEach((btn, i) => {
+      if (answers.includes(i)) {
+        this.selectedIndices.add(i);
+        btn.classList.add('selected');
+      }
+    });
+    setTimeout(() => this.confirmAnswer(), 600);
+  },
+
   /* ── START SESSION ── */
   startSession(section) {
+    const banner = document.getElementById('review-mode-banner');
+    if (banner) banner.classList.toggle('hidden', !reviewMode);
     localStorage.removeItem(STORAGE_KEY);
     this.currentSection = section;
     this.score          = 0;
@@ -582,6 +627,7 @@ const app = {
     const fill  = document.getElementById('instruct-fill');
     const count = document.getElementById('instruct-count');
     if (!btn) return;
+    if (reviewMode) { btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; btn.textContent = "✅ I'm Ready — Let's Begin!"; return; }
     btn.disabled = true;
     btn.style.opacity = '0.45';
     btn.style.cursor  = 'not-allowed';
@@ -609,6 +655,14 @@ const app = {
     const bar   = document.getElementById('reading-timer-bar');
     const fill  = document.getElementById('reading-fill');
     const count = document.getElementById('reading-count');
+
+    if (reviewMode) {
+      bar.classList.add('hidden');
+      document.querySelectorAll('.answer-btn').forEach(b => { b.classList.remove('locked-choice'); b.disabled = false; });
+      setTimeout(() => this._autoAnswer(), 300);
+      return;
+    }
+
     bar.classList.remove('hidden');
     fill.style.width = '100%';
     count.textContent = READ_SECS;
@@ -645,6 +699,13 @@ const app = {
     const bar   = document.getElementById('next-timer-bar');
     const fill  = document.getElementById('next-fill');
     const count = document.getElementById('next-count');
+
+    if (reviewMode) {
+      bar.classList.add('hidden');
+      setTimeout(() => this.nextQuestion(), 800);
+      return;
+    }
+
     bar.classList.remove('hidden');
     fill.style.width = '100%';
     count.textContent = NEXT_SECS;
@@ -897,6 +958,9 @@ const app = {
     else if (pct >= 60) { letter = 'D'; msg = "Keep Practicing! 🔄"; }
 
     this.show('end-screen');
+
+    const reviewNextBtn = document.getElementById('review-next-btn');
+    if (reviewNextBtn) reviewNextBtn.classList.toggle('hidden', !reviewMode);
 
     document.getElementById('final-score-sub').textContent =
       `${SECTION_LABELS[this.currentSection]} · Attempt ${attemptNum} · ${this.studentName}`;
