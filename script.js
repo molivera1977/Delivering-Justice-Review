@@ -24,7 +24,7 @@ function submitScorePartial() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       action:      'submit',
-      game:        'djreview',
+      game:        'dj_' + (app.currentSection || 'djreview'),
       sessionId:   SESSION_ID,
       name:        app.studentName || 'Unknown',
       section:     app.currentSection || '?',
@@ -47,7 +47,7 @@ function submitScoreFinal() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       action:      'submit',
-      game:        'djreview',
+      game:        'dj_' + (app.currentSection || 'djreview'),
       sessionId:   SESSION_ID,
       name:        app.studentName || 'Unknown',
       section:     app.currentSection || '?',
