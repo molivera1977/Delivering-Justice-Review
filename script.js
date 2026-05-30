@@ -235,23 +235,21 @@ function applyLocks(name) {
 
 /* ── SPEAK (directions) ─────────────────────────────── */
 function speakDir(btn) {
-  window.speechSynthesis.cancel();
-  document.querySelectorAll('.dir-text .wrd.hl').forEach(e => e.classList.remove('hl'));
+  if (activeSpeakBtn === btn) { stopActiveSpeech(); return; }
+  stopActiveSpeech();
 
   const p = btn.closest('.dir-section').querySelector('.dir-text');
   if (!p) return;
 
-  // Wrap words in spans once per paragraph
-  if (!p.querySelector('.wrd')) {
-    p.innerHTML = wrapWords(p.innerHTML);
-  }
+  if (!p.querySelector('.wrd')) p.innerHTML = wrapWords(p.innerHTML);
 
   const spans = Array.from(p.querySelectorAll('.wrd'));
   if (!spans.length) return;
 
-  // Build speech text from spans so word count matches exactly
-  const speechText = spans.map(s => s.textContent).join(' ');
+  activeSpeakBtn = btn;
+  btn.textContent = '⏹';
 
+  const speechText = spans.map(s => s.textContent).join(' ');
   let hlIdx = 0;
   const u = new SpeechSynthesisUtterance(speechText);
   u.lang = 'en-US';
@@ -266,7 +264,7 @@ function speakDir(btn) {
 
   u.onend = () => {
     document.querySelectorAll('.dir-text .wrd.hl').forEach(el => el.classList.remove('hl'));
-    hlIdx = 0;
+    if (activeSpeakBtn === btn) { btn.textContent = '🔊'; activeSpeakBtn = null; }
   };
 
   window.speechSynthesis.speak(u);
