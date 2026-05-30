@@ -27,7 +27,8 @@ function submitScorePartial() {
     ? Math.round((app.score / app.currentBank.length) * 100) : 0;
   fetch(SHEET_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({
       action:      'submit',
       game:        'dj_' + (app.currentSection || 'djreview'),
@@ -50,7 +51,8 @@ function submitScoreFinal() {
     ? Math.round((app.score / app.currentBank.length) * 100) : 0;
   fetch(SHEET_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({
       action:      'submit',
       game:        'dj_' + (app.currentSection || 'djreview'),
