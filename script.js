@@ -126,6 +126,7 @@ let pinModalCallback = null;
 let tabSwitchCount  = 0;
 let activeSpeakBtn  = null;
 let reviewMode      = false;
+let reviewAutoRun   = false;
 
 function stopActiveSpeech() {
   window.speechSynthesis.cancel();
@@ -443,11 +444,15 @@ const app = {
     const section = prompt('Choose a section to review:\n1 — Vocabulary\n2 — Comprehension\n3 — Cloze\n\nEnter 1, 2, or 3:');
     const map = { '1': 'vocab', '2': 'comp', '3': 'cloze' };
     if (!map[section]) { alert('Invalid choice.'); reviewMode = false; return; }
+    const mode = prompt('Choose review mode:\n1 — Manual (you tap Next each question)\n2 — Auto-run (fully automatic)\n\nEnter 1 or 2:');
+    if (mode !== '1' && mode !== '2') { alert('Invalid choice.'); reviewMode = false; return; }
+    reviewAutoRun = (mode === '2');
     this.startSession(map[section]);
   },
 
   exitReviewMode() {
-    reviewMode = false;
+    reviewMode    = false;
+    reviewAutoRun = false;
     this.stopTimerEngine();
     const banner = document.getElementById('review-mode-banner');
     if (banner) banner.classList.add('hidden');
@@ -472,7 +477,13 @@ const app = {
   /* ── START SESSION ── */
   startSession(section) {
     const banner = document.getElementById('review-mode-banner');
-    if (banner) banner.classList.toggle('hidden', !reviewMode);
+    if (banner) {
+      banner.classList.toggle('hidden', !reviewMode);
+      const label = banner.querySelector('span');
+      if (label) label.textContent = reviewAutoRun
+        ? '🔍 Teacher Review Mode — auto-run'
+        : '🔍 Teacher Review Mode — tap Next to advance';
+    }
     localStorage.removeItem(STORAGE_KEY);
     this.currentSection = section;
     this.score          = 0;
@@ -702,7 +713,11 @@ const app = {
 
     if (reviewMode) {
       bar.classList.add('hidden');
-      document.getElementById('next-btn').classList.remove('hidden');
+      if (reviewAutoRun) {
+        setTimeout(() => this.nextQuestion(), 800);
+      } else {
+        document.getElementById('next-btn').classList.remove('hidden');
+      }
       return;
     }
 
