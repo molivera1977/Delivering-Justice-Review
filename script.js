@@ -124,6 +124,13 @@ let loggedInName    = '';
 let unlockedSections = new Set();
 let pinModalCallback = null;
 let tabSwitchCount  = 0;
+let activeSpeakBtn  = null;  // currently speaking button element
+
+function stopActiveSpeech() {
+  window.speechSynthesis.cancel();
+  document.querySelectorAll('.wrd.hl').forEach(e => e.classList.remove('hl'));
+  if (activeSpeakBtn) { activeSpeakBtn.textContent = '🔊'; activeSpeakBtn = null; }
+}
 
 /* ── HELPERS ────────────────────────────────────────── */
 function shuffle(arr) {
@@ -711,10 +718,14 @@ const app = {
       speakBtn.title = 'Read this choice aloud';
       speakBtn.onclick = (e) => {
         e.stopPropagation();
-        window.speechSynthesis.cancel();
+        if (activeSpeakBtn === speakBtn) { stopActiveSpeech(); return; }
+        stopActiveSpeech();
+        activeSpeakBtn = speakBtn;
+        speakBtn.textContent = '⏹';
         const u = new SpeechSynthesisUtterance(['A','B','C','D','E'][i] + '. ' + text);
         u.lang = 'en-US';
         u.rate = 0.9;
+        u.onend = () => { if (activeSpeakBtn === speakBtn) { speakBtn.textContent = '🔊'; activeSpeakBtn = null; } };
         window.speechSynthesis.speak(u);
       };
 
@@ -820,7 +831,7 @@ const app = {
 
   /* ── NEXT QUESTION ── */
   nextQuestion() {
-    window.speechSynthesis.cancel();
+    stopActiveSpeech();
     this.currentIndex++;
 
     if (this.currentIndex >= this.currentBank.length) {
@@ -895,8 +906,11 @@ const app = {
 
   /* ── SPEAK QUESTION (question text only — use per-choice buttons for choices) ── */
   speakQuestion() {
-    window.speechSynthesis.cancel();
-    document.querySelectorAll('.wrd.hl').forEach(e => e.classList.remove('hl'));
+    const qBtn = document.getElementById('speak-q-btn');
+    if (activeSpeakBtn === qBtn) { stopActiveSpeech(); return; }
+    stopActiveSpeech();
+    activeSpeakBtn = qBtn;
+    qBtn.textContent = '⏹';
 
     const qtEl    = document.getElementById('question-text');
     const qtSpans = Array.from(qtEl.querySelectorAll('.wrd'));
@@ -930,6 +944,10 @@ const app = {
       u.onend = () => {
         document.querySelectorAll('.wrd.hl').forEach(e => e.classList.remove('hl'));
         pi++;
+        if (pi >= parts.length) {
+          const qBtn = document.getElementById('speak-q-btn');
+          if (activeSpeakBtn === qBtn) { qBtn.textContent = '🔊'; activeSpeakBtn = null; }
+        }
         speakNext();
       };
 
