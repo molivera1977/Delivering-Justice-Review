@@ -710,6 +710,11 @@ const app = {
       const row = document.createElement('div');
       row.className = 'answer-row';
 
+      const btn = document.createElement('button');
+      btn.className = 'answer-btn';
+      btn.innerHTML = `<strong>${['A','B','C','D','E'][i]}.</strong>&nbsp;<span class="choice-text">${choiceHtml(text)}</span>`;
+      btn.onclick = () => this._selectChoice(i, btn, isMulti);
+
       const speakBtn = document.createElement('button');
       speakBtn.className = 'choice-speak-btn';
       speakBtn.textContent = '🔊';
@@ -718,19 +723,34 @@ const app = {
         e.stopPropagation();
         if (activeSpeakBtn === speakBtn) { stopActiveSpeech(); return; }
         stopActiveSpeech();
+
+        // Wrap choice words in spans on first speak
+        const textSpan = btn.querySelector('.choice-text');
+        if (textSpan && !textSpan.querySelector('.wrd')) {
+          textSpan.innerHTML = wrapWords(textSpan.innerHTML);
+        }
+        const spans = textSpan ? Array.from(textSpan.querySelectorAll('.wrd')) : [];
+
         activeSpeakBtn = speakBtn;
         speakBtn.textContent = '⏹';
-        const u = new SpeechSynthesisUtterance(['A','B','C','D','E'][i] + '. ' + text);
+
+        // Speak only the choice text so boundary events align with word spans
+        const u = new SpeechSynthesisUtterance(text);
         u.lang = 'en-US';
         u.rate = 0.9;
-        u.onend = () => { if (activeSpeakBtn === speakBtn) { speakBtn.textContent = '🔊'; activeSpeakBtn = null; } };
+        let hlIdx = 0;
+        u.onboundary = e => {
+          if (e.name !== 'word') return;
+          textSpan.querySelectorAll('.wrd.hl').forEach(el => el.classList.remove('hl'));
+          if (spans[hlIdx]) spans[hlIdx].classList.add('hl');
+          hlIdx++;
+        };
+        u.onend = () => {
+          if (textSpan) textSpan.querySelectorAll('.wrd.hl').forEach(el => el.classList.remove('hl'));
+          if (activeSpeakBtn === speakBtn) { speakBtn.textContent = '🔊'; activeSpeakBtn = null; }
+        };
         window.speechSynthesis.speak(u);
       };
-
-      const btn = document.createElement('button');
-      btn.className = 'answer-btn';
-      btn.innerHTML = `<strong>${['A','B','C','D','E'][i]}.</strong>&nbsp;${choiceHtml(text)}`;
-      btn.onclick = () => this._selectChoice(i, btn, isMulti);
 
       row.appendChild(speakBtn);
       row.appendChild(btn);

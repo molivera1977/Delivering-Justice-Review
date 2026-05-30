@@ -473,6 +473,8 @@ button.choice-speak-btn {
 }
 button.choice-speak-btn:hover { background: #dce8ff; transform: scale(1.1); }
 
+.choice-text .wrd.hl { background: #ffe082; border-radius: 3px; padding: 0 2px; }
+
 .answer-row button.answer-btn { flex: 1; }
 
 button.answer-btn {
