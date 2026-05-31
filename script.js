@@ -1036,7 +1036,7 @@ const app = {
 
     const qtEl    = document.getElementById('question-text');
     const qtSpans = Array.from(qtEl.querySelectorAll('.wrd'));
-    const qtText  = qtSpans.map(s => s.textContent).join(' ');
+    const qtText  = qtSpans.map(s => s.textContent).join(' ').replace(/_+/g, 'blank');
 
     const parts = [
       { text: qtText, spans: qtSpans }
