@@ -594,7 +594,7 @@ const app = {
     const sectionSelect = document.getElementById('section-select');
     if (saved && rc) {
       const data = JSON.parse(saved);
-      if (data.studentName === this.studentName || !this.studentName) {
+      if (this.studentName && data.studentName === this.studentName) {
         rc.classList.remove('hidden');
         document.getElementById('resume-detail').textContent =
           `${SECTION_LABELS[data.currentSection]} — Question ${data.currentIndex + 1} of ${data.currentBank.length}`;
