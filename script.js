@@ -571,17 +571,34 @@ const app = {
   checkResume() {
     const saved = localStorage.getItem(STORAGE_KEY);
     const rc = document.getElementById('resume-container');
+    const sectionSelect = document.getElementById('section-select');
     if (saved && rc) {
       const data = JSON.parse(saved);
       if (data.studentName === this.studentName || !this.studentName) {
         rc.classList.remove('hidden');
         document.getElementById('resume-detail').textContent =
           `${SECTION_LABELS[data.currentSection]} — Question ${data.currentIndex + 1} of ${data.currentBank.length}`;
+        // Lock section buttons — student must resume or have teacher discard
+        if (sectionSelect) {
+          sectionSelect.querySelectorAll('.start-btn').forEach(btn => {
+            btn.disabled = true;
+            btn.style.opacity = '0.4';
+            btn.style.cursor = 'not-allowed';
+          });
+        }
       } else {
         rc.classList.add('hidden');
       }
     } else if (rc) {
       rc.classList.add('hidden');
+      // Unlock section buttons
+      if (sectionSelect) {
+        sectionSelect.querySelectorAll('.start-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          btn.style.cursor = 'pointer';
+        });
+      }
     }
   },
 
@@ -622,6 +639,7 @@ const app = {
         localStorage.removeItem(STORAGE_KEY);
         document.getElementById('resume-container').classList.add('hidden');
         applyLocks(this.studentName);
+        this.checkResume(); // re-runs to unlock section buttons
       }
     );
   },
