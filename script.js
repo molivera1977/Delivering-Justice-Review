@@ -330,6 +330,14 @@ const app = {
 
   /* ── READ ALOUD INTRO ── */
   showReadAloudIntro() {
+    // If a saved session exists, skip read-aloud + directions and go straight to login
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      document.getElementById('welcome-panel').classList.add('hidden');
+      document.getElementById('student-login-panel').classList.remove('hidden');
+      this.checkResume();
+      return;
+    }
     document.getElementById('welcome-panel').classList.add('hidden');
     this.show('readaloud-screen');
     const btn   = document.getElementById('readaloud-btn');
