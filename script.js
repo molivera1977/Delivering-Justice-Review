@@ -908,7 +908,7 @@ const app = {
     });
 
     // Partial score submission every 5 questions
-    if (!reviewMode && this.currentIndex > 0 && this.currentIndex % 5 === 0) {
+    if (this.currentIndex > 0 && this.currentIndex % 5 === 0) {
       submitScorePartial();
     }
 
@@ -1039,7 +1039,7 @@ const app = {
       localStorage.setItem(SCORES_KEY, JSON.stringify(scores));
     }
 
-    if (!reviewMode) submitScoreFinal();
+    submitScoreFinal();
 
     // Grade
     let letter = 'F', msg = "Let's study this again! 📚";
