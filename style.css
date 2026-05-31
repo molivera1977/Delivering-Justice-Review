@@ -506,7 +506,7 @@ button.answer-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 0 #b0bfdd;
 }
-button.answer-btn.selected  { background: #d5f5e3; border-color: var(--teal); border-width: 3px; font-weight: bold; box-shadow: 0 4px 0 var(--teal-dark); }
+button.answer-btn.selected  { background: #fff9c4; border-color: #f9a825; border-width: 3px; font-weight: bold; box-shadow: 0 4px 0 #f57f17; }
 button.answer-btn:disabled  { cursor: not-allowed; opacity: 0.78; }
 button.answer-btn.locked-choice { background: var(--locked-bg); color: #999; cursor: not-allowed; border-color: #ccc; transform: none; box-shadow: none; }
 button.answer-btn.correct   { background: #d4edda; border-color: #28a745; color: #155724; box-shadow: 0 4px 0 #28a745; }
