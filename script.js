@@ -1082,6 +1082,8 @@ const app = {
   /* ── SCORES ── */
   showScores(autoShow = false) {
     this.show('scoreboard-screen');
+    const teacherBtns = document.getElementById('teacher-score-btns');
+    if (teacherBtns) teacherBtns.style.display = this.studentName === 'Mr. O (Teacher)' ? 'flex' : 'none';
     if (!reviewMode) this._startScoreLock(autoShow ? 60 : 0);
     const all    = JSON.parse(localStorage.getItem(SCORES_KEY) || '[]');
     const listEl = document.getElementById('score-list');
