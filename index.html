@@ -39,15 +39,19 @@
 
       <!-- RESUME CARD -->
       <div id="resume-container" class="hidden">
-        <p style="margin:0 0 12px;font-weight:bold;color:#a04000;font-size:1.05rem;">↩️ Welcome back! You have an unfinished session.</p>
-        <p id="resume-detail" style="margin:0 0 14px;color:#555;font-size:0.95rem;"></p>
-        <button class="resume-btn" onclick="app.resumeSession()">↩️ Resume My Session</button>
-        <div style="margin-top:12px;">
-          <button onclick="app.discardProgress()"
-            style="background:none;border:none;color:#c0392b;font-size:0.85rem;cursor:pointer;
-                   font-family:inherit;text-decoration:underline;padding:4px;">
-            🗑️ Discard &amp; start over (Teacher PIN required)
-          </button>
+        <div style="background:#fff8f0;border:3px solid #e67e22;border-radius:16px;padding:24px 20px;text-align:center;margin-bottom:16px;">
+          <div style="font-size:2.5rem;margin-bottom:8px;">↩️</div>
+          <p style="margin:0 0 6px;font-weight:800;color:#a04000;font-size:1.1rem;">Welcome back!</p>
+          <p style="margin:0 0 16px;color:#555;font-size:0.9rem;">You have an unfinished session:</p>
+          <div id="resume-detail" style="font-family:'Fredoka One',cursive;font-size:1.4rem;color:#e67e22;margin-bottom:20px;"></div>
+          <button class="resume-btn" onclick="app.resumeSession()" style="width:100%;font-size:1rem;padding:14px;">↩️ Resume Where I Left Off</button>
+          <div style="margin-top:14px;">
+            <button onclick="app.discardProgress()"
+              style="background:none;border:none;color:#c0392b;font-size:0.82rem;cursor:pointer;
+                     font-family:inherit;text-decoration:underline;padding:4px;">
+              🗑️ Discard &amp; start over (Teacher PIN required)
+            </button>
+          </div>
         </div>
       </div>
 
