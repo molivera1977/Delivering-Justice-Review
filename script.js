@@ -336,12 +336,17 @@ const app = {
     const fill  = document.getElementById('readaloud-fill');
     const count = document.getElementById('readaloud-count');
     btn.disabled = true; btn.style.opacity = '0.45'; btn.style.cursor = 'not-allowed';
-    fill.style.width = '100%'; count.textContent = 6;
+    count.textContent = 6;
+    fill.style.transition = 'none';
+    fill.style.width = '100%';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      fill.style.transition = 'width 6s linear';
+      fill.style.width = '0%';
+    }));
     let remaining = 6;
     const iv = setInterval(() => {
       remaining--;
       count.textContent = remaining;
-      fill.style.width = (remaining / 6 * 100) + '%';
       if (remaining <= 0) {
         clearInterval(iv);
         btn.disabled = false; btn.style.opacity = '1';
@@ -697,13 +702,19 @@ const app = {
     btn.disabled = true;
     btn.style.opacity = '0.45';
     btn.style.cursor  = 'not-allowed';
-    if (fill)  fill.style.width = '100%';
     if (count) count.textContent = INSTRUCT_SECS;
+    if (fill) {
+      fill.style.transition = 'none';
+      fill.style.width = '100%';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        fill.style.transition = `width ${INSTRUCT_SECS}s linear`;
+        fill.style.width = '0%';
+      }));
+    }
     let remaining = INSTRUCT_SECS;
     this.instructInterval = setInterval(() => {
       remaining--;
       if (count) count.textContent = remaining;
-      if (fill)  fill.style.width = (remaining / INSTRUCT_SECS * 100) + '%';
       if (remaining <= 0) {
         clearInterval(this.instructInterval);
         this.instructInterval = null;
@@ -730,8 +741,13 @@ const app = {
     }
 
     bar.classList.remove('hidden');
-    fill.style.width = '100%';
     count.textContent = READ_SECS;
+    fill.style.transition = 'none';
+    fill.style.width = '100%';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      fill.style.transition = `width ${READ_SECS}s linear`;
+      fill.style.width = '0%';
+    }));
 
     // Choices visible but locked
     document.querySelectorAll('.answer-btn').forEach(b => {
@@ -743,7 +759,6 @@ const app = {
     this.readInterval = setInterval(() => {
       remaining--;
       count.textContent = remaining;
-      fill.style.width = (remaining / READ_SECS * 100) + '%';
       if (remaining <= 0) {
         clearInterval(this.readInterval);
         this.readInterval = null;
@@ -777,14 +792,18 @@ const app = {
     }
 
     bar.classList.remove('hidden');
-    fill.style.width = '100%';
     count.textContent = NEXT_SECS;
+    fill.style.transition = 'none';
+    fill.style.width = '100%';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      fill.style.transition = `width ${NEXT_SECS}s linear`;
+      fill.style.width = '0%';
+    }));
 
     let remaining = NEXT_SECS;
     this.nextInterval = setInterval(() => {
       remaining--;
       count.textContent = remaining;
-      fill.style.width = (remaining / NEXT_SECS * 100) + '%';
       if (remaining <= 0) {
         clearInterval(this.nextInterval);
         this.nextInterval = null;
@@ -1212,14 +1231,18 @@ const app = {
     const buttons = document.querySelectorAll('#scoreboard-screen button:not(#sb-lock-bar button)');
     if (!secs || secs <= 0) { if (bar) bar.classList.add('hidden'); return; }
     bar.classList.remove('hidden');
-    fill.style.width = '100%';
     count.textContent = secs;
+    fill.style.transition = 'none';
+    fill.style.width = '100%';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      fill.style.transition = `width ${secs}s linear`;
+      fill.style.width = '0%';
+    }));
     buttons.forEach(b => { b.disabled = true; b.style.opacity = '0.4'; });
     let remaining = secs;
     const iv = setInterval(() => {
       remaining--;
       count.textContent = remaining;
-      fill.style.width = (remaining / secs * 100) + '%';
       if (remaining <= 0) {
         clearInterval(iv);
         bar.classList.add('hidden');
