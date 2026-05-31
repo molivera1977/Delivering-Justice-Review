@@ -6,7 +6,7 @@
 ═══════════════════════════════════════════════════════ */
 
 /* ── CONFIG ─────────────────────────────────────────── */
-const INSTRUCT_SECS = 30;   // instruction lock before choices appear
+const INSTRUCT_SECS = 20;   // instruction lock before choices appear
 const READ_SECS     = 12;   // read lock after choices appear
 const NEXT_SECS     = 6;    // soak before Next button activates
 const STORAGE_KEY   = 'dj_review_session_v1';
@@ -330,14 +330,6 @@ const app = {
 
   /* ── READ ALOUD INTRO ── */
   showReadAloudIntro() {
-    // If a saved session exists, skip read-aloud + directions and go straight to login
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      document.getElementById('welcome-panel').classList.add('hidden');
-      document.getElementById('student-login-panel').classList.remove('hidden');
-      this.checkResume();
-      return;
-    }
     document.getElementById('welcome-panel').classList.add('hidden');
     this.show('readaloud-screen');
     const btn   = document.getElementById('readaloud-btn');
