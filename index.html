@@ -238,6 +238,13 @@
   ══════════════════════════════════════════ -->
   <div id="scoreboard-screen" class="hidden">
     <h2 style="color:var(--primary);text-align:center;">📊 Score History</h2>
+    <div id="sb-lock-bar" class="hidden" style="background:#f3e8ff;border:2px solid #9b59b6;border-radius:10px;padding:8px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;font-size:0.88rem;font-weight:bold;color:#6c3483;">
+      <span>📖 Take a moment to review your scores — buttons unlock in</span>
+      <div style="flex:1;height:8px;background:#e8d5f5;border-radius:4px;overflow:hidden;">
+        <div id="sb-lock-fill" style="height:100%;background:#9b59b6;width:100%;border-radius:4px;transition:width 1s linear;"></div>
+      </div>
+      <span id="sb-lock-count" style="min-width:28px;text-align:right;">60</span><span>s</span>
+    </div>
     <p id="no-scores-msg" style="text-align:center;color:#999;display:none;">No scores yet — complete a section to record your first score!</p>
     <div id="score-list"></div>
     <div id="clear-confirm-panel" class="hidden"

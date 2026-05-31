@@ -1019,6 +1019,11 @@ const app = {
     }
 
     if (pct >= 80) startConfetti();
+
+    // Auto-show score history once all 3 sections completed at least once
+    if (!reviewMode && allSectionsCompletedOnce(this.studentName)) {
+      setTimeout(() => this.showScores(true), 3000);
+    }
   },
 
   /* ── SPEAK QUESTION (question text only — use per-choice buttons for choices) ── */
@@ -1075,8 +1080,9 @@ const app = {
   },
 
   /* ── SCORES ── */
-  showScores() {
+  showScores(autoShow = false) {
     this.show('scoreboard-screen');
+    if (!reviewMode) this._startScoreLock(autoShow ? 60 : 0);
     const all    = JSON.parse(localStorage.getItem(SCORES_KEY) || '[]');
     const listEl = document.getElementById('score-list');
     const noEl   = document.getElementById('no-scores-msg');
@@ -1158,6 +1164,29 @@ const app = {
       <div style="margin-bottom:6px;font-size:0.8rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;">Your Best Scores</div>
       <div class="sb-summary-row">${summaryCards}</div>
       <div style="margin-top:24px;">${details}</div>`;
+  },
+
+  _startScoreLock(secs) {
+    const bar     = document.getElementById('sb-lock-bar');
+    const fill    = document.getElementById('sb-lock-fill');
+    const count   = document.getElementById('sb-lock-count');
+    const buttons = document.querySelectorAll('#scoreboard-screen button:not(#sb-lock-bar button)');
+    if (!secs || secs <= 0) { if (bar) bar.classList.add('hidden'); return; }
+    bar.classList.remove('hidden');
+    fill.style.width = '100%';
+    count.textContent = secs;
+    buttons.forEach(b => { b.disabled = true; b.style.opacity = '0.4'; });
+    let remaining = secs;
+    const iv = setInterval(() => {
+      remaining--;
+      count.textContent = remaining;
+      fill.style.width = (remaining / secs * 100) + '%';
+      if (remaining <= 0) {
+        clearInterval(iv);
+        bar.classList.add('hidden');
+        buttons.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
+      }
+    }, 1000);
   },
 
   clearScores() {
