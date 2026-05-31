@@ -606,7 +606,8 @@ const app = {
       }
     } else if (rc) {
       rc.classList.add('hidden');
-      if (sectionSelect) sectionSelect.classList.remove('hidden');
+      // Only show section select if student is already logged in
+      if (sectionSelect && this.studentName) sectionSelect.classList.remove('hidden');
     }
   },
 
