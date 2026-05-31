@@ -298,6 +298,8 @@ h1 {
 .login-dir h3 { color: #1e8449; }
 .form-dir    { background: #eaf2ff; border-color: #a9c4f5; }
 .form-dir h3  { color: #2471a3; }
+.attempts-dir { background: #fef9e7; border-color: #f9c74f; }
+.attempts-dir h3 { color: #b7770d; }
 .instruct-dir { background: #f3e8ff; border-color: #c39bd3; }
 .instruct-dir h3 { color: #6c3483; }
 .read-dir    { background: #fff8e7; border-color: #ffc107; }
