@@ -361,10 +361,14 @@ const app = {
     if (this.instructInterval) { clearInterval(this.instructInterval); this.instructInterval = null; }
     window.speechSynthesis.cancel();
     document.querySelectorAll('.dir-text .wrd.hl').forEach(e => e.classList.remove('hl'));
+    // Always clear login state so resume card never shows before authentication
+    this.studentName = '';
+    loggedInName = '';
+    document.getElementById('resume-container').classList.add('hidden');
+    document.getElementById('section-select').classList.add('hidden');
     this.show('start-screen');
     document.getElementById('welcome-panel').classList.add('hidden');
     document.getElementById('student-login-panel').classList.remove('hidden');
-    this.checkResume();
   },
 
   /* ── NAME SELECT ── */
