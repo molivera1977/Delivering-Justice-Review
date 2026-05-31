@@ -26,7 +26,7 @@
         </div>
         <div class="welcome-hero-text">
           <p>Practice your vocabulary, comprehension, and cloze sentences for <em>Delivering Justice</em>. Choose your name, pick a section, and get started!</p>
-          <button class="lgs-btn" onclick="app.showDirections()">🚀 Let's Get Started!</button>
+          <button class="lgs-btn" onclick="app.showReadAloudIntro()">🚀 Let's Get Started!</button>
         </div>
       </div>
       <div style="text-align:right;margin-top:10px;">
@@ -99,6 +99,46 @@
 
     </div>
   </div><!-- /#start-screen -->
+
+  <!-- ══════════════════════════════════════════
+       READ ALOUD INTRO SCREEN
+  ══════════════════════════════════════════ -->
+  <div id="readaloud-screen" class="hidden">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:3.5rem;margin-bottom:10px;">🔊</div>
+      <h2 style="color:var(--primary);margin:0 0 8px;">Read Aloud is Available!</h2>
+      <p style="color:#555;font-size:0.95rem;line-height:1.6;max-width:420px;margin:0 auto;">
+        Every question and every answer choice has its own speaker button.<br>
+        You can use it as much as you need!
+      </p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;max-width:420px;margin:0 auto 24px;">
+      <div style="background:#eaf4ff;border:2px solid #b3d4f5;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;">
+        <span style="font-size:2rem;">1️⃣</span>
+        <div><strong>Tap 🔊 once</strong> — the question or choice is read aloud</div>
+      </div>
+      <div style="background:#fff3e0;border:2px solid #ffd08a;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;">
+        <span style="font-size:2rem;">2️⃣</span>
+        <div><strong>Tap ⏹ to stop</strong> — reading stops immediately</div>
+      </div>
+      <div style="background:#e8f5e9;border:2px solid #a5d6a7;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;">
+        <span style="font-size:2rem;">3️⃣</span>
+        <div><strong>Tap 🔊 again</strong> — it replays from the beginning</div>
+      </div>
+    </div>
+
+    <div style="background:#f3e8ff;border:2px solid #9b59b6;border-radius:10px;padding:8px 16px;
+                margin-bottom:14px;display:flex;align-items:center;gap:12px;
+                font-size:0.93rem;font-weight:bold;color:#6c3483;">
+      <span>📢 Please read this carefully — button unlocks in</span>
+      <div style="flex:1;height:8px;background:#e8d5f5;border-radius:4px;overflow:hidden;">
+        <div id="readaloud-fill" style="height:100%;background:#9b59b6;width:100%;border-radius:4px;transition:width 1s linear;"></div>
+      </div>
+      <span id="readaloud-count" style="min-width:28px;text-align:right;font-size:1rem;">6</span><span>s</span>
+    </div>
+    <button id="readaloud-btn" class="ready-btn" onclick="app.showDirections()" disabled style="opacity:0.45;cursor:not-allowed;">⏳ Please wait…</button>
+  </div>
 
   <!-- ══════════════════════════════════════════
        DIRECTIONS SCREEN

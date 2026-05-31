@@ -315,7 +315,7 @@ const app = {
 
   /* ── screens ── */
   show(id) {
-    ['start-screen','directions-screen','quiz-screen','end-screen','scoreboard-screen']
+    ['start-screen','readaloud-screen','directions-screen','quiz-screen','end-screen','scoreboard-screen']
       .forEach(s => document.getElementById(s).classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
     window.speechSynthesis.cancel();
@@ -328,18 +328,37 @@ const app = {
     document.getElementById('student-login-panel').classList.add('hidden');
   },
 
+  /* ── READ ALOUD INTRO ── */
+  showReadAloudIntro() {
+    document.getElementById('welcome-panel').classList.add('hidden');
+    this.show('readaloud-screen');
+    const btn   = document.getElementById('readaloud-btn');
+    const fill  = document.getElementById('readaloud-fill');
+    const count = document.getElementById('readaloud-count');
+    btn.disabled = true; btn.style.opacity = '0.45'; btn.style.cursor = 'not-allowed';
+    fill.style.width = '100%'; count.textContent = 6;
+    let remaining = 6;
+    const iv = setInterval(() => {
+      remaining--;
+      count.textContent = remaining;
+      fill.style.width = (remaining / 6 * 100) + '%';
+      if (remaining <= 0) {
+        clearInterval(iv);
+        btn.disabled = false; btn.style.opacity = '1';
+        btn.style.cursor = 'pointer'; btn.textContent = "✅ Got It — Show Me the Directions!";
+      }
+    }, 1000);
+  },
+
   /* ── DIRECTIONS ── */
   showDirections() {
-    document.getElementById('welcome-panel').classList.add('hidden');
     this.show('directions-screen');
     // Start 30s lock on the I'm Ready button
     this.startInstructionsTimer();
   },
 
   showLogin() {
-    // Stop instructions timer if still running
     if (this.instructInterval) { clearInterval(this.instructInterval); this.instructInterval = null; }
-    // Stop any directions read-aloud and clear highlights
     window.speechSynthesis.cancel();
     document.querySelectorAll('.dir-text .wrd.hl').forEach(e => e.classList.remove('hl'));
     this.show('start-screen');
