@@ -602,7 +602,7 @@ const app = {
         if (sectionSelect) sectionSelect.classList.add('hidden');
       } else {
         rc.classList.add('hidden');
-        if (sectionSelect) sectionSelect.classList.remove('hidden');
+        if (sectionSelect && this.studentName) sectionSelect.classList.remove('hidden');
       }
     } else if (rc) {
       rc.classList.add('hidden');
