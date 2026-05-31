@@ -366,6 +366,8 @@ const app = {
     loggedInName = '';
     document.getElementById('resume-container').classList.add('hidden');
     document.getElementById('section-select').classList.add('hidden');
+    const loginCard = document.getElementById('login-step-card');
+    if (loginCard) loginCard.classList.remove('hidden');
     this.show('start-screen');
     document.getElementById('welcome-panel').classList.add('hidden');
     document.getElementById('student-login-panel').classList.remove('hidden');
@@ -429,9 +431,12 @@ const app = {
     if (matched) {
       loggedInName       = displayName;
       this.studentName   = displayName;
-      document.getElementById('section-select').classList.remove('hidden');
       document.getElementById('student-pin').value = '';
       document.getElementById('login-error').textContent = '';
+      // Hide login form after successful sign-in
+      const loginCard = document.getElementById('login-step-card');
+      if (loginCard) loginCard.classList.add('hidden');
+      document.getElementById('section-select').classList.remove('hidden');
       applyLocks(displayName);
       this.checkResume();
       // Show review mode button only for teacher
@@ -1316,6 +1321,8 @@ const app = {
     document.getElementById('section-select').classList.add('hidden');
     document.getElementById('resume-container').classList.add('hidden');
     document.getElementById('login-error').textContent = '';
+    const loginCard = document.getElementById('login-step-card');
+    if (loginCard) loginCard.classList.remove('hidden');
     this.show('start-screen');
     document.getElementById('welcome-panel').classList.remove('hidden');
     document.getElementById('student-login-panel').classList.add('hidden');
