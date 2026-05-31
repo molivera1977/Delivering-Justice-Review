@@ -474,6 +474,7 @@ const app = {
     if (pin !== '9377') { if (pin !== null) alert('Incorrect PIN.'); return; }
     this.studentName = 'Mr. O (Teacher)';
     reviewMode = true;
+    localStorage.removeItem(STORAGE_KEY); // clear any leftover session
     this._showReviewPicker();
   },
 
@@ -638,6 +639,7 @@ const app = {
   },
 
   saveProgress() {
+    if (reviewMode) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       studentName:     this.studentName,
       currentSection:  this.currentSection,
