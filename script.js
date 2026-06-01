@@ -452,6 +452,7 @@ const app = {
 
   /* ── ATTEMPT START (checks lock) ── */
   attemptStart(section) {
+    if (!this.studentName) return;
     const attempts = getSectionAttempts(this.studentName);
     const done     = attempts[section];
     const allDone1 = allSectionsCompletedOnce(this.studentName);
@@ -528,6 +529,8 @@ const app = {
 
   /* ── START SESSION ── */
   startSession(section) {
+    const warnBanner = document.getElementById('tab-warning-banner');
+    if (warnBanner) warnBanner.classList.add('hidden');
     const banner = document.getElementById('review-mode-banner');
     if (banner) {
       banner.classList.toggle('hidden', !reviewMode);
