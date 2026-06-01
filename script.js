@@ -988,6 +988,27 @@ const app = {
             .map(a => `${['A','B','C','D','E'][a]}. ${q.choices[a]}`).join(' &amp; ')
         }</strong>`;
 
+    // Feedback read-aloud button
+    const fbSpeakBtn = document.createElement('button');
+    fbSpeakBtn.className = 'speak-btn';
+    fbSpeakBtn.style.cssText = 'float:right;margin:-2px 0 6px 10px;';
+    fbSpeakBtn.textContent = '🔊';
+    const spokenFb = correct
+      ? 'Correct!'
+      : `Not quite. The correct answer${isMulti ? 's are' : ' is'}: ${
+          (isMulti ? q.answer : [q.answer]).map(a => q.choices[a]).join(' and ')
+        }`;
+    fbSpeakBtn.onclick = () => {
+      if (activeSpeakBtn === fbSpeakBtn) { stopActiveSpeech(); return; }
+      stopActiveSpeech();
+      activeSpeakBtn = fbSpeakBtn; fbSpeakBtn.textContent = '⏹';
+      const u = new SpeechSynthesisUtterance(spokenFb);
+      u.lang = 'en-US'; u.rate = 0.9;
+      u.onend = () => { fbSpeakBtn.textContent = '🔊'; if (activeSpeakBtn === fbSpeakBtn) activeSpeakBtn = null; };
+      window.speechSynthesis.speak(u);
+    };
+    fb.prepend(fbSpeakBtn);
+
     document.getElementById('confirm-btn').classList.add('hidden');
     document.getElementById('score-text').textContent = `Score: ${this.score}`;
     this._renderStreak();
@@ -1043,7 +1064,8 @@ const app = {
 
     // Grade
     let letter = 'F', msg = "Let's study this again! 📚";
-    if (pct >= 90) { letter = 'A'; msg = "Outstanding Work! 🌟"; }
+    if (pct === 100) { letter = 'A+'; msg = "⭐ PERFECT SCORE! ⭐"; }
+    else if (pct >= 90) { letter = 'A'; msg = "Outstanding Work! 🌟"; }
     else if (pct >= 80) { letter = 'B'; msg = "Great Job! 👏"; }
     else if (pct >= 70) { letter = 'C'; msg = "Good Effort! 💪"; }
     else if (pct >= 60) { letter = 'D'; msg = "Keep Practicing! 🔄"; }
@@ -1074,7 +1096,7 @@ const app = {
       missedSec.classList.add('hidden');
     }
 
-    if (pct >= 80) startConfetti();
+    if (pct >= 80) startConfetti(pct);
 
     // Auto-show score history once all 3 sections completed at least once
     if (!reviewMode && allSectionsCompletedOnce(this.studentName)) {
@@ -1393,6 +1415,8 @@ document.addEventListener('visibilitychange', () => {
     if (app.instructInterval) { clearInterval(app.instructInterval); }
     if (app.readInterval)     { clearInterval(app.readInterval); }
   } else {
+    const warnBanner = document.getElementById('tab-warning-banner');
+    if (warnBanner) warnBanner.classList.remove('hidden');
     app.timerInterval = setInterval(() => {
       app.timerSeconds++;
       app._tickTimer();
@@ -1414,10 +1438,23 @@ let particles = [], animId = null;
 function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 window.addEventListener('resize', resize); resize();
 
-function startConfetti() {
+function startConfetti(pct) {
   particles = [];
-  const cols = ['#1a3a6b','#c9a227','#2ecc71','#3498db','#e74c3c','#9b59b6'];
-  for (let i = 0; i < 160; i++) {
+  let count, cols;
+  if (pct === 100) {
+    count = 300;
+    cols = ['#FFD700','#c9a227','#FFFACD','#FFA500','#ffffff','#FFD700'];
+  } else if (pct >= 90) {
+    count = 220;
+    cols = ['#1a3a6b','#c9a227','#2ecc71','#3498db','#9b59b6','#e74c3c','#FFD700'];
+  } else if (pct >= 80) {
+    count = 160;
+    cols = ['#1a3a6b','#c9a227','#2ecc71','#3498db','#e74c3c','#9b59b6'];
+  } else {
+    count = 80;
+    cols = ['#1a3a6b','#c9a227','#7f8c8d','#95a5a6','#bdc3c7'];
+  }
+  for (let i = 0; i < count; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height - canvas.height,

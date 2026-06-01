@@ -218,6 +218,10 @@
        QUIZ SCREEN
   ══════════════════════════════════════════ -->
   <div id="quiz-screen" class="hidden">
+    <div id="tab-warning-banner" class="hidden" style="background:#fde8f0;border:2px solid #f48fb1;border-radius:10px;padding:8px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;font-size:0.88rem;font-weight:bold;color:#ad1457;">
+      <span>⚠️ Please stay on this page during the review.</span>
+      <button onclick="document.getElementById('tab-warning-banner').classList.add('hidden')" style="background:none;border:none;cursor:pointer;color:#ad1457;font-size:1rem;padding:2px 6px;font-family:inherit;">✕</button>
+    </div>
     <div id="review-mode-banner" class="hidden" style="background:#fff3cd;border:2px solid #ffc107;border-radius:10px;padding:7px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;font-weight:bold;color:#856404;">
       <span>🔍 Teacher Review Mode — auto-answering correctly</span>
       <button onclick="app.exitReviewMode()" style="background:none;border:1px solid #ffc107;border-radius:6px;padding:3px 10px;cursor:pointer;font-family:inherit;font-weight:bold;color:#856404;font-size:0.78rem;">✕ Exit</button>
