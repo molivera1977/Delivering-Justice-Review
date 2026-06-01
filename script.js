@@ -827,7 +827,7 @@ const app = {
     document.getElementById('progress-text').textContent =
       `Question ${this.currentIndex + 1} of ${total}`;
     document.getElementById('score-text').textContent =
-      `Score: ${this.score}`;
+      `${getFirstName(this.studentName)} · ${this.score}`;
     document.getElementById('progress-fill').style.width =
       `${(this.currentIndex / total) * 100}%`;
 
@@ -994,7 +994,7 @@ const app = {
     // Feedback read-aloud button
     const fbSpeakBtn = document.createElement('button');
     fbSpeakBtn.className = 'speak-btn';
-    fbSpeakBtn.style.cssText = 'float:right;margin:-2px 0 6px 10px;';
+    fbSpeakBtn.style.cssText = 'float:left;margin:0 10px 4px 0;';
     fbSpeakBtn.textContent = '🔊';
     const spokenFb = correct
       ? 'Correct!'
@@ -1013,7 +1013,7 @@ const app = {
     fb.prepend(fbSpeakBtn);
 
     document.getElementById('confirm-btn').classList.add('hidden');
-    document.getElementById('score-text').textContent = `Score: ${this.score}`;
+    document.getElementById('score-text').textContent = `${getFirstName(this.studentName)} · ${this.score}`;
     this._renderStreak();
     this.saveProgress();
 
