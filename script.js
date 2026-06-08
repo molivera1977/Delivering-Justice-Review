@@ -11,7 +11,12 @@ const READ_SECS     = 12;   // read lock after choices appear
 const NEXT_SECS     = 6;    // soak before Next button activates
 const STORAGE_KEY   = 'dj_review_session_v1';
 const SCORES_KEY    = 'dj_review_scores_v1';
-const SESSION_ID    = 'DJ-' + Math.random().toString(36).slice(2, 9).toUpperCase();
+const DJ_SESSION_ID_KEY = 'dj_session_id_v1';
+const SESSION_ID = (() => {
+  let id = localStorage.getItem(DJ_SESSION_ID_KEY);
+  if (!id) { id = 'DJ-' + Math.random().toString(36).slice(2, 9).toUpperCase(); localStorage.setItem(DJ_SESSION_ID_KEY, id); }
+  return id;
+})();
 
 /* ── SHEET SUBMISSION (update URL as needed) ───────── */
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzv8CWv1yyi8NeH04now9UxVL4IZm5yMqqsEGMcgGdrcAOWVB-aSp5siTvSSJXIUpzFMA/exec';
@@ -540,6 +545,7 @@ const app = {
         : '🔍 Teacher Review Mode — tap Next to advance';
     }
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(DJ_SESSION_ID_KEY);
     this.currentSection = section;
     this.score          = 0;
     this.streak         = 0;
@@ -1037,6 +1043,7 @@ const app = {
   _finishSession() {
     this.stopTimerEngine();
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(DJ_SESSION_ID_KEY);
 
     const total = this.currentBank.length;
     const pct   = Math.round((this.score / total) * 100);
@@ -1420,6 +1427,7 @@ document.addEventListener('visibilitychange', () => {
   } else {
     const warnBanner = document.getElementById('tab-warning-banner');
     if (warnBanner) warnBanner.classList.remove('hidden');
+    app.stopTimerEngine();
     app.timerInterval = setInterval(() => {
       app.timerSeconds++;
       app._tickTimer();
