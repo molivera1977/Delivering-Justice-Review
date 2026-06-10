@@ -416,15 +416,11 @@ const app = {
 
     if (selVal.startsWith('GUEST:')) {
       const code = selVal.replace('GUEST:', '');
-      if (GUEST_SLOTS[pin] !== undefined && pin === code) {
+      if (pin === code) {
         const firstName = (document.getElementById('guest-display-name').value || '').trim();
         if (!firstName) { errEl.textContent = '⚠️ Please enter your first name.'; return; }
         matched = true;
         displayName = firstName + ' (Guest)';
-      } else if (Object.values(GUEST_SLOTS).some((_, i) => Object.keys(GUEST_SLOTS)[i] === pin)) {
-        matched = true;
-        const firstName = (document.getElementById('guest-display-name').value || '').trim();
-        displayName = (firstName || 'Guest') + ' (Guest)';
       } else {
         errEl.textContent = '❌ Incorrect guest code. Try again.'; return;
       }
@@ -1416,15 +1412,17 @@ const app = {
 
 /* ── VISIBILITY / UNLOAD (timer freeze) ─────────────── */
 document.addEventListener('visibilitychange', () => {
-  if (!app.timerOn) return;
   if (document.hidden) {
+    if (!app.timerOn) return;
     tabSwitchCount++;
     app.stopTimerEngine();
     app.saveProgress();
-    // Freeze instruction/read timers too
     if (app.instructInterval) { clearInterval(app.instructInterval); }
     if (app.readInterval)     { clearInterval(app.readInterval); }
+    app._wasTimerRunning = true;
   } else {
+    if (!app._wasTimerRunning) return;
+    app._wasTimerRunning = false;
     const warnBanner = document.getElementById('tab-warning-banner');
     if (warnBanner) warnBanner.classList.remove('hidden');
     app.stopTimerEngine();
