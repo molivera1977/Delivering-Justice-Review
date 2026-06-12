@@ -35,18 +35,19 @@ function submitScorePartial() {
     mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      action:      'submit',
-      game:        'dj_' + (app.currentSection || 'djreview'),
-      sessionId:   attemptSessionId(),
-      name:        app.studentName || 'Unknown',
-      section:     app.currentSection || '?',
-      score:       app.score,
-      total:       app.currentBank.length,
-      percent:     pct,
-      status:      `In Progress (Q${app.currentIndex + 1}/${app.currentBank.length})`,
-      done:        false,
-      elapsed:     app.timerSeconds,
-      timestamp:   new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+      action:         'submit',
+      game:           'dj_' + (app.currentSection || 'djreview'),
+      sessionId:      attemptSessionId(),
+      name:           app.studentName || 'Unknown',
+      section:        app.currentSection || '?',
+      score:          app.score,
+      total:          app.currentBank.length,
+      percent:        pct,
+      status:         `In Progress (Q${app.currentIndex + 1}/${app.currentBank.length})`,
+      done:           false,
+      elapsed:        app.timerSeconds,
+      wrongQuestions: (app.missedQuestions||[]).map(m=>`[${m.id}] ${m.q}`).join(' | '),
+      timestamp:      new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
     })
   }).catch(() => {});
 }
@@ -59,19 +60,20 @@ function submitScoreFinal() {
     mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      action:      'submit',
-      game:        'dj_' + (app.currentSection || 'djreview'),
-      sessionId:   attemptSessionId(),
-      name:        app.studentName || 'Unknown',
-      section:     app.currentSection || '?',
-      attempt:     app.currentAttemptNum || 1,
-      score:       app.score,
-      total:       app.currentBank.length,
-      percent:     pct,
-      status:      'Complete',
-      done:        true,
-      elapsed:     app.timerSeconds,
-      timestamp:   new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+      action:         'submit',
+      game:           'dj_' + (app.currentSection || 'djreview'),
+      sessionId:      attemptSessionId(),
+      name:           app.studentName || 'Unknown',
+      section:        app.currentSection || '?',
+      attempt:        app.currentAttemptNum || 1,
+      score:          app.score,
+      total:          app.currentBank.length,
+      percent:        pct,
+      status:         'Complete',
+      done:           true,
+      elapsed:        app.timerSeconds,
+      wrongQuestions: (app.missedQuestions||[]).map(m=>`[${m.id}] ${m.q}`).join(' | '),
+      timestamp:      new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
     })
   }).catch(() => {});
 }
